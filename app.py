@@ -6,7 +6,7 @@ st.markdown(
     f"""
     <style>
     .stApp {{
-        background-image: url('https://github.com/calmscc/Wildfire/blob/main/wild.jpg');
+        background-image: url('file://{background_img_path}');
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
