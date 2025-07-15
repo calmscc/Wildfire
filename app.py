@@ -1,13 +1,26 @@
 import streamlit as st
+import base64
+
+file_ = open("wild.jpg", "rb")
+contents = file_.read()
+data_url = base64.b64encode(contents).decode()
+
 st.markdown(
-    """
+    f"""
     <style>
-    .stApp {
-        background-color: rgb(194, 127, 102, 1);
-    }
+    .stApp {{
+        background-image: url("data:image/jpg;base64,{https://github.com/calmscc/Wildfire/blob/main/wild.jpg?raw=true}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }}
     </style>
     """,
-    unsafe_allow_html=True)
+    unsafe_allow_html=True
+)
+
+
 
 st.title('Wildfire Risk Prediction')
 st.write("Enter the weather and environmental data to predict wildfire risk.")
