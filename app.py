@@ -9,7 +9,7 @@ st.markdown(
     f"""
     <style>
     .stApp {{
-        background-image: url("data:image/jpg;base64,{wild.jpg}");
+        background-image: url("https://github.com/calmscc/Wildfire/blob/979e2705440658993a348a5efd459b82ee3e8b64/wild.jpg");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
