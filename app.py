@@ -1,6 +1,6 @@
 import streamlit as st
 
-background_img_path = "background.jpg"  # Adjust if in a subfolder
+background_img_path = "wild1.jpg"  # Adjust if in a subfolder
 
 st.markdown(
     f"""
