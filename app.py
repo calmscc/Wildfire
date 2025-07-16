@@ -1,7 +1,7 @@
 import streamlit as st
 import base64
 
-file_ = open("wild1.jpg", "rb")
+file_ = open("wild.jpg", "rb")
 contents = file_.read()
 data_url = base64.b64encode(contents).decode()
 
