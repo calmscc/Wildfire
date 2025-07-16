@@ -1,12 +1,15 @@
 import streamlit as st
+import base64
 
-background_img_path = "wild1.jpg"  # Adjust if in a subfolder
+file_ = open("wild1.jpg", "rb")
+contents = file_.read()
+data_url = base64.b64encode(contents).decode()
 
 st.markdown(
     f"""
     <style>
     .stApp {{
-        background-image: url('file://{background_img_path}');
+        background-image: url("data:image/jpg;base64,{data_url}");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -16,6 +19,7 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
 
 
 st.title('Wildfire Risk Prediction')
