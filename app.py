@@ -34,22 +34,28 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-st.markdown("""
-    <style>
-    .stNumberInput input,
-    .stTextInput input,
-    .stTextArea textarea,
-    .stSelectbox div[data-baseweb="select"] {
-        background-color: #fff !important;
-        color: #222 !important;
-    }
-    </style>
-""", unsafe_allow_html=True)
-
 import streamlit as st
-import pandas as pd
 import joblib
+import pandas as pd
 from datetime import datetime
+
+@st.cache_resource
+def load_model():
+    return joblib.load('wildfire_model.joblib')
+
+@st.cache_resource
+def load_scaler():
+    return joblib.load('scaler.joblib')
+
+@st.cache_resource
+def load_season_encoder():
+    return joblib.load('season_encoder.joblib')
+
+model = load_model()
+scaler = load_scaler()
+season_encoder = load_season_encoder()
+
+
 
 
 st.set_page_config(layout="wide")
