@@ -49,7 +49,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 st.markdown(
-    "<h2 style='text-align: center;'>Enter the weather and environmental data to predict wildfire risk.</h2>",
+    "<h2 style='text-align: center; style='font-size:12px'>Enter the weather and environmental data to predict wildfire risk.</h2>",
     unsafe_allow_html=True
 )
 
