@@ -45,9 +45,8 @@ st.markdown("""
     color: #222 !important;
 }
 
-/* Make the horizontal row of input columns have a semi-transparent dark background */
 .stColumns {
-    background: rgba(30,30,30,0.11);  /* dark color, about 11% opacity */
+    background: rgba(8, 5, 5, 0.52); 
     padding: 1.2em;
     border-radius: 10px;
     margin-bottom: 1em;
