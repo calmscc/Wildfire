@@ -34,29 +34,37 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+st.markdown("""
+<style>
+/* Make all number/text input backgrounds white with dark text */
+.stNumberInput input,
+.stTextInput input,
+.stTextArea textarea,
+.stSelectbox div[data-baseweb="select"] {
+    background-color: #fff !important;
+    color: #222 !important;
+}
+
+/* Make the horizontal row of input columns have a semi-transparent dark background */
+.stColumns {
+    background: rgba(30,30,30,0.11);  /* dark color, about 11% opacity */
+    padding: 1.2em;
+    border-radius: 10px;
+    margin-bottom: 1em;
+}
+
+/* Space between columns, padding optional */
+.stColumns > div {
+    padding: 0.25em;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
 import streamlit as st
 import joblib
 import pandas as pd
 from datetime import datetime
-
-@st.cache_resource
-def load_model():
-    return joblib.load('wildfire_model.joblib')
-
-@st.cache_resource
-def load_scaler():
-    return joblib.load('scaler.joblib')
-
-@st.cache_resource
-def load_season_encoder():
-    return joblib.load('season_encoder.joblib')
-
-model = load_model()
-scaler = load_scaler()
-season_encoder = load_season_encoder()
-
-
-
 
 st.set_page_config(layout="wide")
 
