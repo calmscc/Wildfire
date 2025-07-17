@@ -20,8 +20,6 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-
-
 file_ = open("wild.jpg", "rb")
 contents = file_.read()
 data_url = base64.b64encode(contents).decode()
@@ -41,7 +39,6 @@ import joblib
 from datetime import datetime
 
 
-# Set Streamlit layout to wide for better horizontal space
 st.set_page_config(layout="wide")
 
 st.markdown(
@@ -55,12 +52,10 @@ st.markdown(
 )
 
 
-# --- LOAD MODEL AND ENCODERS ---
 model = joblib.load('wildfire_model.joblib')
 scaler = joblib.load('scaler.joblib')
 season_encoder = joblib.load('season_encoder.joblib')
 
-# --- HORIZONTAL LAYOUT: INPUT COLUMNS ---
 col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
 
 with col1:
@@ -68,7 +63,7 @@ with col1:
 with col2:
     AVG_WIND_SPEED = st.number_input("Average Wind Speed (mph)", value=0.0)
 with col3:
-    WIND_TEMP_RATIO = st.number_input("Wind/Temp Ratio", value=0.0)
+    WIND_TEMP_RATIO = st.number_input("Wind over Temp Ratio", value=0.0)
 with col4:
     LAGGED_PRECIPITATION = st.number_input("Past Precipitation (inches)", value=0.0)
 with col5:
@@ -103,7 +98,6 @@ with col_season:
         index=list(season_encoder.classes_).index(detected_season) if detected_season in season_encoder.classes_ else 0
     )
 
-# Compute derived features
 TEMP_RANGE = MAX_TEMP_F - MIN_TEMP_F if MAX_TEMP_F >= MIN_TEMP_F else 0.0
 
 features = [
@@ -156,9 +150,10 @@ if st.button("Predict Wildfire Risk"):
 
 import matplotlib.pyplot as plt
 import seaborn as sns
+
 if st.checkbox("Show correlation heatmap"):
     df = pd.read_csv('wildfire_dataset.csv')
     corr = df.select_dtypes(include=['number']).corr()
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(8, 5)) 
     sns.heatmap(corr, ax=ax, cmap='coolwarm', annot=True, fmt=".2f")
     st.pyplot(fig)
