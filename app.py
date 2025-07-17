@@ -154,6 +154,6 @@ import seaborn as sns
 if st.checkbox("Show correlation heatmap"):
     df = pd.read_csv('wildfire_dataset.csv')
     corr = df.select_dtypes(include=['number']).corr()
-    fig, ax = plt.subplots(figsize=(8, 5)) 
+    fig, ax = plt.subplots(figsize=(4, 2.5)) 
     sns.heatmap(corr, ax=ax, cmap='coolwarm', annot=True, fmt=".2f")
     st.pyplot(fig)
