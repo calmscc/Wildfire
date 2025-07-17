@@ -45,12 +45,12 @@ from datetime import datetime
 st.set_page_config(layout="wide")
 
 st.markdown(
-    "<h2 style='text-align: center; font-size: 22px;'>Wildfire Risk Prediction</h2>",
+    "<h2 style='text-align: center; font-size: 40px;'>Wildfire Risk Prediction</h2>",
     unsafe_allow_html=True
 
 )
 st.markdown(
-    "<h2 style='text-align: center; font-size: 14px;'>Enter the weather and environmental data to predict wildfire risk.</h2>",
+    "<h2 style='text-align: center; font-size: 20px;'>Enter the weather and environmental data to predict wildfire risk.</h2>",
     unsafe_allow_html=True
 )
 
