@@ -26,7 +26,7 @@ file_ = open("wild.jpg", "rb")
 contents = file_.read()
 data_url = base64.b64encode(contents).decode()
 
-st.sidebar.markdown(
+st.markdown(
     """<a href="https://github.com/calmscc/Wildfire">
     <img src="data:image/jpg;base64,{}" width="25">
     </a>""".format(
