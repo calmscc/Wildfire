@@ -33,6 +33,19 @@ st.markdown(
     ),
     unsafe_allow_html=True,
 )
+
+st.markdown("""
+    <style>
+    .stNumberInput input,
+    .stTextInput input,
+    .stTextArea textarea,
+    .stSelectbox div[data-baseweb="select"] {
+        background-color: #fff !important;
+        color: #222 !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 import streamlit as st
 import pandas as pd
 import joblib
