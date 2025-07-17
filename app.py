@@ -44,8 +44,14 @@ from datetime import datetime
 # Set Streamlit layout to wide for better horizontal space
 st.set_page_config(layout="wide")
 
-st.title('Wildfire Risk Prediction')
-st.write("Enter the weather and environmental data to predict wildfire risk.")
+st.markdown(
+    "<h2 style='text-align: center;'>Wildfire Risk Prediction</h2>",
+    unsafe_allow_html=True
+)
+st.markdown(
+    "<h2 style='text-align: center;'>Enter the weather and environmental data to predict wildfire risk.</h2>",
+    unsafe_allow_html=True
+)
 
 # --- LOAD MODEL AND ENCODERS ---
 model = joblib.load('wildfire_model.joblib')
