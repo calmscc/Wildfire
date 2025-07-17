@@ -93,7 +93,7 @@ with col_season:
         "Unknown"
     )
     SEASON = st.selectbox(
-        "Season (auto-set by date, override if desired)",
+        "Season",
         list(season_encoder.classes_),
         index=list(season_encoder.classes_).index(detected_season) if detected_season in season_encoder.classes_ else 0
     )
