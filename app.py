@@ -28,9 +28,9 @@ data_url = base64.b64encode(contents).decode()
 
 st.sidebar.markdown(
     """<a href="https://github.com/calmscc/Wildfire">
-    <img src="data:image/png;base64,{}" width="25">
+    <img src="data:image/jpg;base64,{}" width="25">
     </a>""".format(
-        base64.b64encode(open("github.png", "rb").read()).decode()
+        base64.b64encode(open("github.jpg", "rb").read()).decode()
     ),
     unsafe_allow_html=True,
 )
