@@ -52,15 +52,8 @@ st.markdown(f"""
     color: #222 !important;
 }}
 
-.stColumns {{
-    background: rgba(0, 0, 0, 0.75); 
-    padding: 1.2em;
-    border-radius: 10px;
-    margin-bottom: 1em;
-}}
-
 .input-container {{
-    background: rgba(255, 255, 255, 0.25);  /* light semi-transparent background */
+    background: rgba(255, 255, 255, 0.25); 
     border-radius: 15px;
     padding: 25px;
     margin-top: 15px;
@@ -87,7 +80,9 @@ st.markdown("<h2 style='text-align: center; font-size: 35px;'>Wildfire Risk Pred
 st.markdown("<h2 style='text-align: center; font-size: 17.5px;'>Enter the weather and environmental data to predict wildfire risk.</h2>", unsafe_allow_html=True)
 
 # --- Input Form ---
-with st.form("fire_form"):
+with st.container():
+    st.markdown('<div class="input-container">', unsafe_allow_html=True)
+
     col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
 
     with col1:
