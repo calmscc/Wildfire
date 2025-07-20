@@ -53,7 +53,7 @@ st.markdown(f"""
 }}
 
 .stColumns {{
-    background: rgba(0, 0, 0, 0.75); 
+    background: rgbargba(71, 68, 70, 1); 
     padding: 1.2em;
     border-radius: 10px;
     margin-bottom: 1em;
