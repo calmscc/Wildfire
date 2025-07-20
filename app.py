@@ -82,8 +82,6 @@ st.markdown("""
 st.markdown("<h2 style='text-align: center; font-size: 35px;'>Wildfire Risk Prediction</h2>", unsafe_allow_html=True)
 st.markdown("<h2 style='text-align: center; font-size: 17.5px;'>Enter the weather and environmental data to predict wildfire risk.</h2>", unsafe_allow_html=True)
 
-# --- Input Form ---
-w# --- Input Form with Highlighted Box ---
 st.markdown('<div class="input-container">', unsafe_allow_html=True)  # Open the box
 
 with st.form("fire_form"):
