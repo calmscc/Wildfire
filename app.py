@@ -85,21 +85,21 @@ with st.form("input_form"):
 }}
 </style>
 """, unsafe_allow_html=True)
-    with st.container():
+      with st.container():
         col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
-    with col1:
+      with col1:
         PRECIPITATION = st.number_input("Rain Precipitation (inches)", value=0.0)
-    with col2:
+      with col2:
         AVG_WIND_SPEED = st.number_input("Average Wind Speed (mph)", value=0.0)
-    with col3:
+      with col3:
         WIND_TEMP_RATIO = st.number_input("Wind over Temp Ratio", value=0.0)
-    with col4:
+      with col4:
         LAGGED_PRECIPITATION = st.number_input("Past Precipitation (inches)", value=0.0)
-    with col5:
+      with col5:
         LAGGED_AVG_WIND_SPEED = st.number_input("Past Avg Wind Speed (mph)", value=0.0)
-    with col6:
+      with col6:
         MIN_TEMP_F = st.number_input("Minimum Temperature (°F)", value=0.0)
-    with col7:
+      with col7:
         MAX_TEMP_F = st.number_input("Maximum Temperature (°F)", value=0.0)
 
     st.divider()
