@@ -149,3 +149,37 @@ with st.form("input_form"):
             user_input['MAX_TEMP'],
             user_input['MIN_TEMP'],
             user_input['AVG_WIND_SPEED'],
+            user_input['TEMP_RANGE'],
+            user_input['WIND_TEMP_RATIO'],
+            user_input['MONTH'],
+            season_encoder.transform([user_input["SEASON"]])[0],
+            user_input['LAGGED_PRECIPITATION'],
+            user_input['LAGGED_AVG_WIND_SPEED'],
+            user_input['DAY_OF_YEAR']
+        ]
+
+        zero_fields = [
+            PRECIPITATION, AVG_WIND_SPEED, WIND_TEMP_RATIO, LAGGED_PRECIPITATION,
+            LAGGED_AVG_WIND_SPEED, MIN_TEMP_F, MAX_TEMP_F
+        ]
+
+        if all(val == 0 or val == 0.0 for val in zero_fields):
+            proba = 0.0
+        else:
+            input_df = pd.DataFrame([input_vals], columns=features)
+            input_scaled = scaler.transform(input_df)
+            proba = model.predict_proba(input_scaled)[0, 1]
+
+        st.write(f"**Predicted wildfire risk:** {proba:.2%}")
+        risk_level = "Low" if proba < 0.3 else "Moderate" if proba < 0.7 else "High"
+        st.write(f"**Risk Level:** {risk_level}")
+
+st.markdown('</div>', unsafe_allow_html=True)
+
+# --- Heatmap toggle ---
+if st.checkbox("Show correlation heatmap"):
+    df = pd.read_csv('wildfire_dataset.csv')
+    corr = df.select_dtypes(include=['number']).corr()
+    fig, ax = plt.subplots(figsize=(7, 3)) 
+    sns.heatmap(corr, ax=ax, cmap='coolwarm', annot=True, fmt=".2f")
+    st.pyplot(fig)
