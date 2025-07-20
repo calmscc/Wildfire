@@ -84,7 +84,9 @@ st.markdown("<h2 style='text-align: center; font-size: 17.5px;'>Enter the weathe
 
 st.markdown('<div class="input-container">', unsafe_allow_html=True)  # Open the box
 
-with st.form("fire_form"):
+with st.container():
+    st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
+    with st.form("fire_form"):
     col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
     with col1:
         PRECIPITATION = st.number_input("Rain Precipitation (inches)", value=0.0)
@@ -125,8 +127,7 @@ with st.form("fire_form"):
         )
 
     submitted = st.form_submit_button("Predict Wildfire Risk")
-    # ... your prediction logic here
-st.markdown('</div>', unsafe_allow_html=True)  # Close the box
+    # ... your prediction logic here  # Close the box
 if submitted:
         TEMP_RANGE = MAX_TEMP_F - MIN_TEMP_F if MAX_TEMP_F >= MIN_TEMP_F else 0.0
         features = [
@@ -178,6 +179,9 @@ if submitted:
         st.write(f"**Predicted wildfire risk:** {proba:.2%}")
         risk_level = "Low" if proba < 0.3 else "Moderate" if proba < 0.7 else "High"
         st.write(f"**Risk Level:** {risk_level}")
+        st.markdown('</div>', unsafe_allow_html=True)
+                 
+        
 
 # --- Heatmap toggle ---
 if st.checkbox("Show correlation heatmap"):
