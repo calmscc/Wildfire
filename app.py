@@ -68,38 +68,23 @@ st.markdown("<h2 style='text-align: center; font-size: 35px;'>Wildfire Risk Pred
 st.markdown("<h2 style='text-align: center; font-size: 17.5px;'>Enter the weather and environmental data to predict wildfire risk.</h2>", unsafe_allow_html=True)
 
 # --- Input Form, visually boxed ---
-st.markdown("""
-<style>
-/* Applies to the first stContainer after the header for the form */
-section.main > div > div > div > div > div:nth-child(5) {
-    background: rgba(40,40,40,0.33);
-    border-radius: 18px;
-    padding: 35px 28px 30px 28px;
-    margin: 14px 0 32px 0;
-    box-shadow: 0 12px 34px rgba(0,0,0,0.21);
-    backdrop-filter: blur(7px);
-    -webkit-backdrop-filter: blur(7px);
-    border: 1px solid rgba(255,255,255,0.1);
-}
-</style>
-""", unsafe_allow_html=True)
-with st.form("input_form"):
-    with st.container():
-        col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
-        with col1:
-            PRECIPITATION = st.number_input("Rain Precipitation (inches)", value=0.0)
-        with col2:
-            AVG_WIND_SPEED = st.number_input("Average Wind Speed (mph)", value=0.0)
-        with col3:
-            WIND_TEMP_RATIO = st.number_input("Wind over Temp Ratio", value=0.0)
-        with col4:
-            LAGGED_PRECIPITATION = st.number_input("Past Precipitation (inches)", value=0.0)
-        with col5:
-            LAGGED_AVG_WIND_SPEED = st.number_input("Past Avg Wind Speed (mph)", value=0.0)
-        with col6:
-            MIN_TEMP_F = st.number_input("Minimum Temperature (°F)", value=0.0)
-        with col7:
-            MAX_TEMP_F = st.number_input("Maximum Temperature (°F)", value=0.0)
+with st.form(key="fire_form"):
+    col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
+
+    with col1:
+        PRECIPITATION = st.number_input("Rain Precipitation (inches)", value=0.0)
+    with col2:
+        AVG_WIND_SPEED = st.number_input("Average Wind Speed (mph)", value=0.0)
+    with col3:
+        WIND_TEMP_RATIO = st.number_input("Wind over Temp Ratio", value=0.0)
+    with col4:
+        LAGGED_PRECIPITATION = st.number_input("Past Precipitation (inches)", value=0.0)
+    with col5:
+        LAGGED_AVG_WIND_SPEED = st.number_input("Past Avg Wind Speed (mph)", value=0.0)
+    with col6:
+        MIN_TEMP_F = st.number_input("Minimum Temperature (°F)", value=0.0)
+    with col7:
+        MAX_TEMP_F = st.number_input("Maximum Temperature (°F)", value=0.0)
 
     st.divider()
     col_date, col_season = st.columns(2)
@@ -126,57 +111,29 @@ with st.form("input_form"):
 
     submitted = st.form_submit_button("Predict Wildfire Risk")
 
-    if submitted:
-        TEMP_RANGE = MAX_TEMP_F - MIN_TEMP_F if MAX_TEMP_F >= MIN_TEMP_F else 0.0
-        features = [
-            "PRECIPITATION", "MAX_TEMP", "MIN_TEMP", "AVG_WIND_SPEED",
-            "TEMP_RANGE", "WIND_TEMP_RATIO", "MONTH", "SEASON",
-            "LAGGED_PRECIPITATION", "LAGGED_AVG_WIND_SPEED", "DAY_OF_YEAR"
-        ]
+if submitted:
+    TEMP_RANGE = MAX_TEMP_F - MIN_TEMP_F if MAX_TEMP_F >= MIN_TEMP_F else 0.0
 
-        user_input = {
-            "PRECIPITATION": PRECIPITATION,
-            "MAX_TEMP": MAX_TEMP_F,
-            "MIN_TEMP": MIN_TEMP_F,
-            "AVG_WIND_SPEED": AVG_WIND_SPEED,
-            "TEMP_RANGE": TEMP_RANGE,
-            "WIND_TEMP_RATIO": WIND_TEMP_RATIO,
-            "MONTH": MONTH,
-            "SEASON": SEASON,
-            "LAGGED_PRECIPITATION": LAGGED_PRECIPITATION,
-            "LAGGED_AVG_WIND_SPEED": LAGGED_AVG_WIND_SPEED,
-            "DAY_OF_YEAR": DAY_OF_YEAR
-        }
+    input_vals = [
+        PRECIPITATION, MAX_TEMP_F, MIN_TEMP_F, AVG_WIND_SPEED, TEMP_RANGE,
+        WIND_TEMP_RATIO, MONTH, season_encoder.transform([SEASON])[0],
+        LAGGED_PRECIPITATION, LAGGED_AVG_WIND_SPEED, DAY_OF_YEAR
+    ]
+    zero_fields = [
+        PRECIPITATION, AVG_WIND_SPEED, WIND_TEMP_RATIO, LAGGED_PRECIPITATION,
+        LAGGED_AVG_WIND_SPEED, MIN_TEMP_F, MAX_TEMP_F
+    ]
+    if all(val == 0 or val == 0.0 for val in zero_fields):
+        proba = 0.0
+    else:
+        input_df = pd.DataFrame([input_vals], columns=features)
+        input_scaled = scaler.transform(input_df)
+        proba = model.predict_proba(input_scaled)[0, 1]
 
-        input_vals = [
-            user_input['PRECIPITATION'],
-            user_input['MAX_TEMP'],
-            user_input['MIN_TEMP'],
-            user_input['AVG_WIND_SPEED'],
-            user_input['TEMP_RANGE'],
-            user_input['WIND_TEMP_RATIO'],
-            user_input['MONTH'],
-            season_encoder.transform([user_input["SEASON"]])[0],
-            user_input['LAGGED_PRECIPITATION'],
-            user_input['LAGGED_AVG_WIND_SPEED'],
-            user_input['DAY_OF_YEAR']
-        ]
+    st.write(f"**Predicted wildfire risk:** {proba:.2%}")
+    risk_level = "Low" if proba < 0.3 else "Moderate" if proba < 0.7 else "High"
+    st.write(f"**Risk Level:** {risk_level}")
 
-        zero_fields = [
-            PRECIPITATION, AVG_WIND_SPEED, WIND_TEMP_RATIO, LAGGED_PRECIPITATION,
-            LAGGED_AVG_WIND_SPEED, MIN_TEMP_F, MAX_TEMP_F
-        ]
-
-        if all(val == 0 or val == 0.0 for val in zero_fields):
-            proba = 0.0
-        else:
-            input_df = pd.DataFrame([input_vals], columns=features)
-            input_scaled = scaler.transform(input_df)
-            proba = model.predict_proba(input_scaled)[0, 1]
-
-        st.write(f"**Predicted wildfire risk:** {proba:.2%}")
-        risk_level = "Low" if proba < 0.3 else "Moderate" if proba < 0.7 else "High"
-        st.write(f"**Risk Level:** {risk_level}")
 
 st.markdown('</div>', unsafe_allow_html=True)
 
