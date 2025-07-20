@@ -53,12 +53,15 @@ st.markdown(f"""
 }}
 
 .input-container {{
-    background: rgba(255, 255, 255, 0.25); 
-    border-radius: 15px;
-    padding: 25px;
-    margin-top: 15px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.2);
-    backdrop-filter: blur(6px);
+    background: rgba(255, 255, 255, 0.55); /* Lighter and more clear */
+    border-radius: 18px;
+    padding: 30px 25px 25px 25px;
+    margin-top: 16px;
+    margin-bottom: 32px;
+    box-shadow: 0 4px 32px rgba(30,30,30,0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: background 0.4s;
 }}
 
 .stColumns > div {{
@@ -80,9 +83,11 @@ st.markdown("<h2 style='text-align: center; font-size: 35px;'>Wildfire Risk Pred
 st.markdown("<h2 style='text-align: center; font-size: 17.5px;'>Enter the weather and environmental data to predict wildfire risk.</h2>", unsafe_allow_html=True)
 
 # --- Input Form ---
+w# --- Input Form with Highlighted Box ---
+st.markdown('<div class="input-container">', unsafe_allow_html=True)  # Open the box
+
 with st.form("fire_form"):
     col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
-
     with col1:
         PRECIPITATION = st.number_input("Rain Precipitation (inches)", value=0.0)
     with col2:
@@ -122,6 +127,9 @@ with st.form("fire_form"):
         )
 
     submitted = st.form_submit_button("Predict Wildfire Risk")
+    # ... your prediction logic here
+
+st.markdown('</div>', unsafe_allow_html=True)  # Close the box
 
     if submitted:
         TEMP_RANGE = MAX_TEMP_F - MIN_TEMP_F if MAX_TEMP_F >= MIN_TEMP_F else 0.0
