@@ -52,6 +52,16 @@ st.markdown(f"""
     color: #222 !important;
 }}
 
+.form-box {{
+    background: rgba(0, 0, 0, 0.4);  /* darker translucent background */
+    border: 2px solid rgba(255, 255, 255, 0.2);  /* subtle white border */
+    border-radius: 15px;
+    padding: 25px 30px;
+    margin: 0 auto;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    max-width: 100%;
+    transition: all 0.3s ease;
+}}
 .stColumns > div {{
     padding: 0.25em;
 }}
@@ -70,9 +80,9 @@ st.markdown("""
 st.markdown("<h2 style='text-align: center; font-size: 35px;'>Wildfire Risk Prediction</h2>", unsafe_allow_html=True)
 st.markdown("<h2 style='text-align: center; font-size: 17.5px;'>Enter the weather and environmental data to predict wildfire risk.</h2>", unsafe_allow_html=True)
 
-with st.container():
-    st.markdown('<div class="input-container">', unsafe_allow_html=True)
-with st.form("fire_form"):
+with st.form("input_form"):
+    with st.container():
+        st.markdown('<div class="form-box">', unsafe_allow_html=True)
     col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
     with col1:
         PRECIPITATION = st.number_input("Rain Precipitation (inches)", value=0.0)
