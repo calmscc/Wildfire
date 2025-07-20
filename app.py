@@ -52,16 +52,6 @@ st.markdown(f"""
 .stColumns > div {{
     padding: 0.25em;
 }}
-.form-box {{
-    background: rgba(0, 0, 0, 0.4);  /* darker translucent background */
-    border: 2px solid rgba(255, 255, 255, 0.2);  /* subtle white border */
-    border-radius: 15px;
-    padding: 25px 30px;
-    margin: 0 auto 28px auto;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
-    max-width: 100%;
-    transition: all 0.3s ease;
-}}
 </style>
 """, unsafe_allow_html=True)
 
@@ -78,7 +68,21 @@ st.markdown("<h2 style='text-align: center; font-size: 35px;'>Wildfire Risk Pred
 st.markdown("<h2 style='text-align: center; font-size: 17.5px;'>Enter the weather and environmental data to predict wildfire risk.</h2>", unsafe_allow_html=True)
 
 # --- Input Form, visually boxed ---
-st.markdown('<div class="form-box">', unsafe_allow_html=True)
+st.markdown("""
+<style>
+/* Applies to the first stContainer after the header for the form */
+section.main > div > div > div > div > div:nth-child(5) {
+    background: rgba(40,40,40,0.33);
+    border-radius: 18px;
+    padding: 35px 28px 30px 28px;
+    margin: 14px 0 32px 0;
+    box-shadow: 0 12px 34px rgba(0,0,0,0.21);
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+</style>
+""", unsafe_allow_html=True)
 with st.form("input_form"):
     with st.container():
         col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
