@@ -73,7 +73,7 @@ st.markdown("<h2 style='text-align: center; font-size: 17.5px;'>Enter the weathe
 with st.container():
     st.markdown("""
     <style>
-  .input-overlay-box {{
+  .input-overlay-box {
     position: relative;
     background: rgba(255,255,255,0.38);  /* Light, clear overlay */
     border-radius: 18px;
@@ -83,7 +83,7 @@ with st.container():
     backdrop-filter: blur(9px);
     -webkit-backdrop-filter: blur(9px);
     z-index: 1;
-}}
+}
     </style>
     <div class="form-box">
     """, unsafe_allow_html=True)
