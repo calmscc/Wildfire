@@ -1,9 +1,17 @@
 import streamlit as st
 import base64
+import joblib
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from datetime import datetime
 
-file_ = open("wild.jpg", "rb")
-contents = file_.read()
-data_url = base64.b64encode(contents).decode()
+st.set_page_config(layout="wide")
+
+# Load image and convert to base64 once
+with open("wild.jpg", "rb") as f:
+    contents = f.read()
+    data_url = base64.b64encode(contents).decode()
 
 st.markdown(
     f"""
@@ -20,10 +28,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-file_ = open("wild.jpg", "rb")
-contents = file_.read()
-data_url = base64.b64encode(contents).decode()
-
+# GitHub icon
 st.markdown(
     """<a href="https://github.com/calmscc/Wildfire">
     <div style="text-align: right;">
@@ -34,9 +39,9 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+# Custom widget styles
 st.markdown("""
 <style>
-/* Make all number/text input backgrounds white with dark text */
 .stNumberInput input,
 .stTextInput input,
 .stTextArea textarea,
@@ -44,62 +49,54 @@ st.markdown("""
     background-color: #fff !important;
     color: #222 !important;
 }
-
 .stColumns {
     background: rgba(8, 5, 5, 0.52); 
     padding: 1.2em;
     border-radius: 10px;
     margin-bottom: 1em;
 }
-
-/* Space between columns, padding optional */
 .stColumns > div {
     padding: 0.25em;
 }
 </style>
 """, unsafe_allow_html=True)
 
+@st.cache_resource
+def load_model():
+    return joblib.load('wildfire_model.joblib')
 
-import streamlit as st
-import joblib
-import pandas as pd
-from datetime import datetime
+@st.cache_resource
+def load_scaler():
+    return joblib.load('scaler.joblib')
 
-st.set_page_config(layout="wide")
+@st.cache_resource
+def load_encoder():
+    return joblib.load('season_encoder.joblib')
 
-st.markdown(
-    "<h2 style='text-align: center; font-size: 35px;'>Wildfire Risk Prediction</h2>",
-    unsafe_allow_html=True
+model = load_model()
+scaler = load_scaler()
+season_encoder = load_encoder()
 
-)
-st.markdown(
-    "<h2 style='text-align: center; font-size: 17.5px;'>Enter the weather and environmental data to predict wildfire risk.</h2>",
-    unsafe_allow_html=True
-)
-
-
-model = joblib.load('wildfire_model.joblib')
-scaler = joblib.load('scaler.joblib')
-season_encoder = joblib.load('season_encoder.joblib')
+st.markdown("<h2 style='text-align: center; font-size: 35px;'>Wildfire Risk Prediction</h2>", unsafe_allow_html=True)
+st.markdown("<h2 style='text-align: center; font-size: 17.5px;'>Enter the weather and environmental data to predict wildfire risk.</h2>", unsafe_allow_html=True)
 
 col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
 
 with col1:
-    PRECIPITATION = st.number_input("Rain Precipitation (inches)", value=0.0)
+    PRECIPITATION = st.number_input("Rain Precipitation (inches)", value=st.session_state.get("PRECIPITATION", 0.0), key="PRECIPITATION")
 with col2:
-    AVG_WIND_SPEED = st.number_input("Average Wind Speed (mph)", value=0.0)
+    AVG_WIND_SPEED = st.number_input("Average Wind Speed (mph)", value=st.session_state.get("AVG_WIND_SPEED", 0.0), key="AVG_WIND_SPEED")
 with col3:
-    WIND_TEMP_RATIO = st.number_input("Wind over Temp Ratio", value=0.0)
+    WIND_TEMP_RATIO = st.number_input("Wind over Temp Ratio", value=st.session_state.get("WIND_TEMP_RATIO", 0.0), key="WIND_TEMP_RATIO")
 with col4:
-    LAGGED_PRECIPITATION = st.number_input("Past Precipitation (inches)", value=0.0)
+    LAGGED_PRECIPITATION = st.number_input("Past Precipitation (inches)", value=st.session_state.get("LAGGED_PRECIPITATION", 0.0), key="LAGGED_PRECIPITATION")
 with col5:
-    LAGGED_AVG_WIND_SPEED = st.number_input("Past Avg Wind Speed (mph)", value=0.0)
+    LAGGED_AVG_WIND_SPEED = st.number_input("Past Avg Wind Speed (mph)", value=st.session_state.get("LAGGED_AVG_WIND_SPEED", 0.0), key="LAGGED_AVG_WIND_SPEED")
 with col6:
-    MIN_TEMP_F = st.number_input("Minimum Temperature (°F)", value=0.0)
+    MIN_TEMP_F = st.number_input("Minimum Temperature (°F)", value=st.session_state.get("MIN_TEMP_F", 0.0), key="MIN_TEMP_F")
 with col7:
-    MAX_TEMP_F = st.number_input("Maximum Temperature (°F)", value=0.0)
+    MAX_TEMP_F = st.number_input("Maximum Temperature (°F)", value=st.session_state.get("MAX_TEMP_F", 0.0), key="MAX_TEMP_F")
 
-# Additional features, vertical below the main row for clarity:
 st.divider()
 col_date, col_season = st.columns(2)
 with col_date:
@@ -107,22 +104,14 @@ with col_date:
     MONTH = selected_date.month
     DAY_OF_YEAR = selected_date.timetuple().tm_yday
 with col_season:
-    # Estimate season and allow override
     season_dict = {
         (12, 1, 2): "Winter",
         (3, 4, 5): "Spring",
         (6, 7, 8): "Summer",
         (9, 10, 11): "Autumn"
     }
-    detected_season = next(
-        (name for months, name in zip(season_dict.keys(), season_dict.values()) if MONTH in months),
-        "Unknown"
-    )
-    SEASON = st.selectbox(
-        "Season",
-        list(season_encoder.classes_),
-        index=list(season_encoder.classes_).index(detected_season) if detected_season in season_encoder.classes_ else 0
-    )
+    detected_season = next((name for months, name in zip(season_dict.keys(), season_dict.values()) if MONTH in months), "Unknown")
+    SEASON = st.selectbox("Season", list(season_encoder.classes_), index=list(season_encoder.classes_).index(detected_season) if detected_season in season_encoder.classes_ else 0)
 
 TEMP_RANGE = MAX_TEMP_F - MIN_TEMP_F if MAX_TEMP_F >= MIN_TEMP_F else 0.0
 
@@ -174,12 +163,9 @@ if st.button("Predict Wildfire Risk"):
     risk_level = "Low" if proba < 0.3 else "Moderate" if proba < 0.7 else "High"
     st.write(f"**Risk Level:** {risk_level}")
 
-import matplotlib.pyplot as plt
-import seaborn as sns
-
 if st.checkbox("Show correlation heatmap"):
     df = pd.read_csv('wildfire_dataset.csv')
     corr = df.select_dtypes(include=['number']).corr()
-    fig, ax = plt.subplots(figsize=(7, 3)) 
+    fig, ax = plt.subplots(figsize=(7, 3))
     sns.heatmap(corr, ax=ax, cmap='coolwarm', annot=True, fmt=".2f")
     st.pyplot(fig)
