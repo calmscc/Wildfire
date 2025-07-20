@@ -80,9 +80,7 @@ st.markdown("<h2 style='text-align: center; font-size: 35px;'>Wildfire Risk Pred
 st.markdown("<h2 style='text-align: center; font-size: 17.5px;'>Enter the weather and environmental data to predict wildfire risk.</h2>", unsafe_allow_html=True)
 
 # --- Input Form ---
-with st.container():
-    st.markdown('<div class="input-container">', unsafe_allow_html=True)
-
+with st.form("fire_form"):
     col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
 
     with col1:
