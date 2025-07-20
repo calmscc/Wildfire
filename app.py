@@ -58,6 +58,16 @@ st.markdown(f"""
     border-radius: 10px;
     margin-bottom: 1em;
 }}
+
+.input-container {{
+    background: rgba(255, 255, 255, 0.25);  /* light semi-transparent background */
+    border-radius: 15px;
+    padding: 25px;
+    margin-top: 15px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    backdrop-filter: blur(6px);
+}}
+
 .stColumns > div {{
     padding: 0.25em;
 }}
