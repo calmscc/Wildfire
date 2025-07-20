@@ -42,46 +42,32 @@ st.markdown(f"""
     background-repeat: no-repeat;
     background-attachment: fixed;
 }}
-/* 🔲 Container background and blur (glassmorphism) */
-.stColumns {{
-    background: rgba(0, 0, 0, 0.35);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    padding: 1.5em;
+
+/* Input styles */
+.stNumberInput input,
+.stTextInput input,
+.stTextArea textarea,
+.stSelectbox div[data-baseweb="select"] {{
+    background-color: #fff !important;
+    color: #000 !important;
+}}
+
+/* Colored overlay box surrounding all inputs */
+.input-overlay-box {{
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent dark box */
+    border: 2px solid #ffffff;           /* White border */
     border-radius: 15px;
-    margin-bottom: 1.2em;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 30px;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }}
 
-/* 🌫️ Inputs background overlay */
-div[data-baseweb="input"],
-div[data-baseweb="select"],
-div[data-baseweb="datepicker"],
-textarea {{
-    background-color: rgba(255, 255, 255, 0.2) !important;
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    color: #fff !important;
-    border-radius: 8px;
-    padding: 8px;
-    border: 1px solid rgba(255,255,255,0.2);
-}}
-
-/* 💬 Input text color */
-input, select, textarea {{
-    color: #fff !important;
-}}
-
-/* 🪟 Title text */
-h2 {{
-    color: white;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.7);
-    margin-top: 0;
-    margin-bottom: 0.25em;
+/* Optional spacing */
+.stColumns > div {{
+    padding: 0.25em;
 }}
 </style>
 """, unsafe_allow_html=True)
-
 # --- Header and GitHub ---
 st.markdown("""
 <a href="https://github.com/calmscc/Wildfire">
