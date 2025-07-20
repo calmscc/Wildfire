@@ -52,23 +52,13 @@ st.markdown(f"""
     color: #000 !important;
 }}
 
-/* Colored overlay box surrounding all inputs */
-.input-overlay-box {{
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent dark box */
-    border: 2px solid #ffffff;           /* White border */
-    border-radius: 15px;
-    padding: 30px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}}
-
 /* Optional spacing */
 .stColumns > div {{
     padding: 0.25em;
 }}
 </style>
 """, unsafe_allow_html=True)
-# --- Header and GitHub ---
+
 st.markdown("""
 <a href="https://github.com/calmscc/Wildfire">
 <div style="text-align: right;">
@@ -80,7 +70,7 @@ st.markdown("""
 st.markdown("<h2 style='text-align: center; font-size: 35px;'>Wildfire Risk Prediction</h2>", unsafe_allow_html=True)
 st.markdown("<h2 style='text-align: center; font-size: 17.5px;'>Enter the weather and environmental data to predict wildfire risk.</h2>", unsafe_allow_html=True)
 
-# --- Input Form, visually boxed ---
+
 with st.form(key="fire_form"):
     col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
 
