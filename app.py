@@ -51,6 +51,13 @@ st.markdown(f"""
     background-color: #fff !important;
     color: #222 !important;
 }}
+
+.stColumns {{
+    background: rgba(0, 0, 0, 0.75); 
+    padding: 1.2em;
+    border-radius: 10px;
+    margin-bottom: 1em;
+}}
 .stColumns > div {{
     padding: 0.25em;
 }}
