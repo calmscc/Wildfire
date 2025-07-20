@@ -53,15 +53,14 @@ st.markdown(f"""
 }}
 
 .input-container {{
-    background: rgba(255, 255, 255, 0.55); /* Lighter and more clear */
-    border-radius: 18px;
-    padding: 30px 25px 25px 25px;
-    margin-top: 16px;
-    margin-bottom: 32px;
-    box-shadow: 0 4px 32px rgba(30,30,30,0.05);
+    background: rgba(0, 0, 0, 0.55); 
+    border-radius: 20px;
+    padding: 30px 40px;
+    margin: 30px auto;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    transition: background 0.4s;
+    max-width: 90%;
 }}
 
 .stColumns > div {{
@@ -179,7 +178,8 @@ if submitted:
         st.write(f"**Predicted wildfire risk:** {proba:.2%}")
         risk_level = "Low" if proba < 0.3 else "Moderate" if proba < 0.7 else "High"
         st.write(f"**Risk Level:** {risk_level}")
-        st.markdown('</div>', unsafe_allow_html=True)
+    
+st.markdown('</div>', unsafe_allow_html=True)
                  
         
 
