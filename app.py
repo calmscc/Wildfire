@@ -102,13 +102,13 @@ with st.form("input_form"):
  with col7:
         MAX_TEMP_F = st.number_input("Maximum Temperature (°F)", value=0.0)
 
-    st.divider()
+ st.divider()
     col_date, col_season = st.columns(2)
-    with col_date:
+ with col_date:
         selected_date = st.date_input("Date", value=datetime.today())
         MONTH = selected_date.month
         DAY_OF_YEAR = selected_date.timetuple().tm_yday
-    with col_season:
+ with col_season:
         season_dict = {
             (12, 1, 2): "Winter",
             (3, 4, 5): "Spring",
