@@ -85,7 +85,7 @@ with st.form("input_form"):
 }}
 </style>
 """, unsafe_allow_html=True)
-      with st.container():
+ with st.container():
         col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
       with col1:
         PRECIPITATION = st.number_input("Rain Precipitation (inches)", value=0.0)
