@@ -128,10 +128,8 @@ with st.form("fire_form"):
 
     submitted = st.form_submit_button("Predict Wildfire Risk")
     # ... your prediction logic here
-
 st.markdown('</div>', unsafe_allow_html=True)  # Close the box
-
-    if submitted:
+if submitted:
         TEMP_RANGE = MAX_TEMP_F - MIN_TEMP_F if MAX_TEMP_F >= MIN_TEMP_F else 0.0
         features = [
             "PRECIPITATION", "MAX_TEMP", "MIN_TEMP", "AVG_WIND_SPEED",
