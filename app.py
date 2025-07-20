@@ -42,15 +42,42 @@ st.markdown(f"""
     background-repeat: no-repeat;
     background-attachment: fixed;
 }}
-.stNumberInput input,
-.stTextInput input,
-.stTextArea textarea,
-.stSelectbox div[data-baseweb="select"] {{
-    background-color: #fff !important;
-    color: #222 !important;
+/* 🔲 Container background and blur (glassmorphism) */
+.stColumns {{
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 1.5em;
+    border-radius: 15px;
+    margin-bottom: 1.2em;
+    border: 1px solid rgba(255, 255, 255, 0.15);
 }}
-.stColumns > div {{
-    padding: 0.25em;
+
+/* 🌫️ Inputs background overlay */
+div[data-baseweb="input"],
+div[data-baseweb="select"],
+div[data-baseweb="datepicker"],
+textarea {{
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    color: #fff !important;
+    border-radius: 8px;
+    padding: 8px;
+    border: 1px solid rgba(255,255,255,0.2);
+}}
+
+/* 💬 Input text color */
+input, select, textarea {{
+    color: #fff !important;
+}}
+
+/* 🪟 Title text */
+h2 {{
+    color: white;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.7);
+    margin-top: 0;
+    margin-bottom: 0.25em;
 }}
 </style>
 """, unsafe_allow_html=True)
