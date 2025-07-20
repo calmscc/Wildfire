@@ -43,7 +43,17 @@ st.markdown(f"""
     background-repeat: no-repeat;
     background-attachment: fixed;
 }}
-
+.input-overlay-box {{
+    position: relative;
+    background: rgba(255,255,255,0.38);  /* Light, clear overlay */
+    border-radius: 18px;
+    padding: 38px 28px 28px 28px;
+    margin: 22px 0 32px 0;
+    box-shadow: 0 8px 32px rgba(30,30,30,0.08);
+    backdrop-filter: blur(9px);
+    -webkit-backdrop-filter: blur(9px);
+    z-index: 1;
+}}
 .stNumberInput input,
 .stTextInput input,
 .stTextArea textarea,
@@ -71,22 +81,6 @@ st.markdown("<h2 style='text-align: center; font-size: 35px;'>Wildfire Risk Pred
 st.markdown("<h2 style='text-align: center; font-size: 17.5px;'>Enter the weather and environmental data to predict wildfire risk.</h2>", unsafe_allow_html=True)
 
 with st.container():
-    st.markdown("""
-    <style>
-    .form-box {
-        background: rgba(255, 255, 255, 0.25);
-        border-radius: 20px;
-        padding: 30px 40px;
-        margin: 0 auto;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        max-width: 100%;
-    }
-    </style>
-    <div class="form-box">
-    """, unsafe_allow_html=True)
-    
     st.markdown('<div class="input-container">', unsafe_allow_html=True)
 with st.form("fire_form"):
     col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
