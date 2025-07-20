@@ -86,7 +86,7 @@ st.markdown('<div class="input-container">', unsafe_allow_html=True)  # Open the
 
 with st.container():
     st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
-    with st.form("fire_form"):
+with st.form("fire_form"):
     col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
     with col1:
         PRECIPITATION = st.number_input("Rain Precipitation (inches)", value=0.0)
