@@ -7,7 +7,7 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# === Cache helpers ===
+# Cache helpers
 @st.cache_data
 def get_base64_image(img_path):
     with open(img_path, "rb") as file:
@@ -27,26 +27,22 @@ def load_encoder():
 
 @st.cache_data
 def load_features():
-    # Features aligned with model but without geospatial fields for simpler UI
     return [
         "PRECIPITATION","MAX_TEMP","MIN_TEMP","AVG_WIND_SPEED",
         "TEMP_RANGE","WIND_TEMP_RATIO","MONTH","SEASON",
         "LAGGED_PRECIPITATION","LAGGED_AVG_WIND_SPEED","DAY_OF_YEAR","TEMP_DIFF"
     ]
 
-# === Load resources ===
 bg_data_url = get_base64_image("wild.jpg")
 github_data_url = get_base64_image("github.jpg")
 model = load_model()
 scaler = load_scaler()
 season_encoder = load_encoder()
 
-# Manually override season_encoder.classes_ to desired order
+# Assign classes order if desired
 season_encoder.classes_ = np.array(["Winter", "Spring", "Summer", "Fall"])
-
 features = load_features()
 
-# === Styling ===
 st.set_page_config(layout="wide")
 st.markdown(f"""
 <style>
@@ -64,22 +60,23 @@ st.markdown(f"""
     background-color: #fff !important;
     color: #000 !important;
 }}
-.stColumns > div {{ padding: 0.25em; }}
+.stColumns > div {{
+    padding: 0.25em;
+}}
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown("""
+st.markdown(f"""
 <a href="https://github.com/calmscc/Wildfire">
-<div style="text-align: right;">
-<img src="data:image/jpg;base64,{}" width="25">
-</div>
+  <div style="text-align: right;">
+    <img src="data:image/jpg;base64,{github_data_url}" width="25">
+  </div>
 </a>
-""".format(github_data_url), unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 st.markdown("<h2 style='text-align: center; font-size: 35px;'>Wildfire Risk Prediction</h2>", unsafe_allow_html=True)
 st.markdown("<h2 style='text-align: center; font-size: 17.5px;'>Enter weather and environmental data to predict wildfire risk.</h2>", unsafe_allow_html=True)
 
-# Define function to get season from month
 def get_season(month):
     if month in [12, 1, 2]:
         return "Winter"
@@ -90,12 +87,10 @@ def get_season(month):
     else:
         return "Fall"
 
-# Callback to update season when date changes
 def update_season():
     selected_month = st.session_state['selected_date'].month
     st.session_state['season'] = get_season(selected_month)
 
-# Initialize session_state defaults if not present
 if 'selected_date' not in st.session_state:
     st.session_state['selected_date'] = datetime.today()
 if 'season' not in st.session_state:
@@ -113,7 +108,6 @@ with st.form(key="fire_form"):
     MIN_TEMP_F = cols2[1].number_input("Min Temperature (°F)", value=0.0)
     MAX_TEMP_F = cols2[2].number_input("Max Temperature (°F)", value=0.0)
 
-    # Date input with on_change callback to update season
     selected_date = cols2[3].date_input(
         "Select Date",
         value=st.session_state['selected_date'],
@@ -124,7 +118,6 @@ with st.form(key="fire_form"):
     DAY_OF_YEAR = selected_date.timetuple().tm_yday
 
     seasons = list(season_encoder.classes_)
-    # Season selectbox uses session_state 'season' for the current value
     SEASON = st.selectbox(
         "Season",
         seasons,
@@ -133,8 +126,9 @@ with st.form(key="fire_form"):
     )
 
     TEMP_RANGE = MAX_TEMP_F - MIN_TEMP_F if MAX_TEMP_F >= MIN_TEMP_F else 0.0
-    TEMP_DIFF = TEMP_RANGE  # Keeping consistent with model input naming
+    TEMP_DIFF = TEMP_RANGE
 
+    # **MANDATORY submit button inside the form!**
     submitted = st.form_submit_button("Predict Wildfire Risk")
 
 if submitted:
@@ -153,10 +147,8 @@ if submitted:
         "TEMP_DIFF": TEMP_DIFF
     }
 
-    # Build model input vector in correct feature order
     model_input = [input_data[feat] for feat in features]
 
-    # Check if all critical inputs are zero (basic validation)
     zero_fields = [
         PRECIPITATION, AVG_WIND_SPEED, WIND_TEMP_RATIO, LAGGED_PRECIPITATION,
         LAGGED_AVG_WIND_SPEED, MIN_TEMP_F, MAX_TEMP_F
