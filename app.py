@@ -79,6 +79,28 @@ st.markdown("""
 st.markdown("<h2 style='text-align: center; font-size: 35px;'>Wildfire Risk Prediction</h2>", unsafe_allow_html=True)
 st.markdown("<h2 style='text-align: center; font-size: 17.5px;'>Enter weather and environmental data to predict wildfire risk.</h2>", unsafe_allow_html=True)
 
+# Define function to get season from month
+def get_season(month):
+    if month in [12, 1, 2]:
+        return "Winter"
+    elif month in [3, 4, 5]:
+        return "Spring"
+    elif month in [6, 7, 8]:
+        return "Summer"
+    else:
+        return "Fall"
+
+# Callback to update season when date changes
+def update_season():
+    selected_month = st.session_state['selected_date'].month
+    st.session_state['season'] = get_season(selected_month)
+
+# Initialize session_state defaults if not present
+if 'selected_date' not in st.session_state:
+    st.session_state['selected_date'] = datetime.today()
+if 'season' not in st.session_state:
+    st.session_state['season'] = get_season(st.session_state['selected_date'].month)
+
 with st.form(key="fire_form"):
     cols = st.columns(4)
     PRECIPITATION = cols[0].number_input("Rain Precipitation (inches)", value=0.0)
@@ -91,29 +113,24 @@ with st.form(key="fire_form"):
     MIN_TEMP_F = cols2[1].number_input("Min Temperature (°F)", value=0.0)
     MAX_TEMP_F = cols2[2].number_input("Max Temperature (°F)", value=0.0)
 
-    # Date input replaces separate month and day of year with automatic extraction
-    selected_date = cols2[3].date_input("Select Date", value=datetime.today())
+    # Date input with on_change callback to update season
+    selected_date = cols2[3].date_input(
+        "Select Date",
+        value=st.session_state['selected_date'],
+        key='selected_date',
+        on_change=update_season
+    )
     MONTH = selected_date.month
     DAY_OF_YEAR = selected_date.timetuple().tm_yday
 
-    # Determine season from selected_date month
-    def get_season(month):
-        if month in [12, 1, 2]:
-            return "Winter"
-        elif month in [3, 4, 5]:
-            return "Spring"
-        elif month in [6, 7, 8]:
-            return "Summer"
-        else:
-            return "Fall"
-
     seasons = list(season_encoder.classes_)
-    detected_season = get_season(MONTH)
-
-    # Ensure the detected season index in seasons list
-    default_index = seasons.index(detected_season) if detected_season in seasons else 0
-
-    SEASON = st.selectbox("Season", seasons, index=default_index)
+    # Season selectbox uses session_state 'season' for the current value
+    SEASON = st.selectbox(
+        "Season",
+        seasons,
+        index=seasons.index(st.session_state['season']),
+        key='season'
+    )
 
     TEMP_RANGE = MAX_TEMP_F - MIN_TEMP_F if MAX_TEMP_F >= MIN_TEMP_F else 0.0
     TEMP_DIFF = TEMP_RANGE  # Keeping consistent with model input naming
