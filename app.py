@@ -135,10 +135,12 @@ if submitted:
         "DAY_OF_YEAR": DAY_OF_YEAR,
         "TEMP_DIFF": TEMP_DIFF
     }
-    
+
+    # Build model input vector in correct feature order
     model_input = [input_data[feat] for feat in features]
 
-      zero_fields = [
+    # Check if all critical inputs are zero (basic validation)
+    zero_fields = [
         PRECIPITATION, AVG_WIND_SPEED, WIND_TEMP_RATIO, LAGGED_PRECIPITATION,
         LAGGED_AVG_WIND_SPEED, MIN_TEMP_F, MAX_TEMP_F
     ]
