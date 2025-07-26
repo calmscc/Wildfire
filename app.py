@@ -96,9 +96,24 @@ with st.form(key="fire_form"):
     MONTH = selected_date.month
     DAY_OF_YEAR = selected_date.timetuple().tm_yday
 
-    # Season dropdown with all 4 seasons explicitly shown in logical order
+    # Determine season from selected_date month
+    def get_season(month):
+        if month in [12, 1, 2]:
+            return "Winter"
+        elif month in [3, 4, 5]:
+            return "Spring"
+        elif month in [6, 7, 8]:
+            return "Summer"
+        else:
+            return "Fall"
+
     seasons = list(season_encoder.classes_)
-    SEASON = st.selectbox("Season", seasons, index=seasons.index("Winter"))  # Default to 'Winter'
+    detected_season = get_season(MONTH)
+
+    # Ensure the detected season index in seasons list
+    default_index = seasons.index(detected_season) if detected_season in seasons else 0
+
+    SEASON = st.selectbox("Season", seasons, index=default_index)
 
     TEMP_RANGE = MAX_TEMP_F - MIN_TEMP_F if MAX_TEMP_F >= MIN_TEMP_F else 0.0
     TEMP_DIFF = TEMP_RANGE  # Keeping consistent with model input naming
@@ -120,12 +135,10 @@ if submitted:
         "DAY_OF_YEAR": DAY_OF_YEAR,
         "TEMP_DIFF": TEMP_DIFF
     }
-
-    # Build model input vector in correct feature order
+    
     model_input = [input_data[feat] for feat in features]
 
-    # Check if all critical inputs are zero (basic validation)
-    zero_fields = [
+      zero_fields = [
         PRECIPITATION, AVG_WIND_SPEED, WIND_TEMP_RATIO, LAGGED_PRECIPITATION,
         LAGGED_AVG_WIND_SPEED, MIN_TEMP_F, MAX_TEMP_F
     ]
