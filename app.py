@@ -27,7 +27,7 @@ def load_encoder():
 
 @st.cache_data
 def load_features():
-    # Features aligned with model but without geospatial fields removed for simpler UI
+    # Features aligned with model but without geospatial fields for simpler UI
     return [
         "PRECIPITATION","MAX_TEMP","MIN_TEMP","AVG_WIND_SPEED",
         "TEMP_RANGE","WIND_TEMP_RATIO","MONTH","SEASON",
@@ -40,6 +40,10 @@ github_data_url = get_base64_image("github.jpg")
 model = load_model()
 scaler = load_scaler()
 season_encoder = load_encoder()
+
+# Manually override season_encoder.classes_ to desired order
+season_encoder.classes_ = np.array(["Winter", "Spring", "Summer", "Fall"])
+
 features = load_features()
 
 # === Styling ===
@@ -80,10 +84,10 @@ with st.form(key="fire_form"):
     PRECIPITATION = cols[0].number_input("Rain Precipitation (inches)", value=0.0)
     AVG_WIND_SPEED = cols[1].number_input("Avg Wind Speed (mph)", value=0.0)
     WIND_TEMP_RATIO = cols[2].number_input("Wind/Temp Ratio", value=0.0)
-    LAGGED_PRECIPITATION = cols[3].number_input("Past 7d Precip (inches)", value=0.0)
+    LAGGED_PRECIPITATION = cols[3].number_input("Past 7d Precipitation (inches)", value=0.0)
 
     cols2 = st.columns(4)
-    LAGGED_AVG_WIND_SPEED = cols2[0].number_input("Past 7d Avg Wind (mph)", value=0.0)
+    LAGGED_AVG_WIND_SPEED = cols2[0].number_input("Past 7d Avg Wind Speed (mph)", value=0.0)
     MIN_TEMP_F = cols2[1].number_input("Min Temperature (°F)", value=0.0)
     MAX_TEMP_F = cols2[2].number_input("Max Temperature (°F)", value=0.0)
 
@@ -92,12 +96,12 @@ with st.form(key="fire_form"):
     MONTH = selected_date.month
     DAY_OF_YEAR = selected_date.timetuple().tm_yday
 
-    # Season dropdown shows all seasons (you can also remove detection for full explicit choice)
+    # Season dropdown with all 4 seasons explicitly shown in logical order
     seasons = list(season_encoder.classes_)
-    SEASON = st.selectbox("Season", seasons, index=seasons.index(seasons[0]))
+    SEASON = st.selectbox("Season", seasons, index=seasons.index("Winter"))  # Default to 'Winter'
 
     TEMP_RANGE = MAX_TEMP_F - MIN_TEMP_F if MAX_TEMP_F >= MIN_TEMP_F else 0.0
-    TEMP_DIFF = TEMP_RANGE  # keep consistent with your model input naming
+    TEMP_DIFF = TEMP_RANGE  # Keeping consistent with model input naming
 
     submitted = st.form_submit_button("Predict Wildfire Risk")
 
@@ -117,9 +121,10 @@ if submitted:
         "TEMP_DIFF": TEMP_DIFF
     }
 
-    # Map model input in order
+    # Build model input vector in correct feature order
     model_input = [input_data[feat] for feat in features]
 
+    # Check if all critical inputs are zero (basic validation)
     zero_fields = [
         PRECIPITATION, AVG_WIND_SPEED, WIND_TEMP_RATIO, LAGGED_PRECIPITATION,
         LAGGED_AVG_WIND_SPEED, MIN_TEMP_F, MAX_TEMP_F
