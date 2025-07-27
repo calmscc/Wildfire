@@ -132,7 +132,7 @@ with st.form(key="fire_form"):
     TEMP_RANGE = MAX_TEMP_F - MIN_TEMP_F if MAX_TEMP_F >= MIN_TEMP_F else 0.0
     TEMP_DIFF = TEMP_RANGE  # consistent with model input
 
-    submitted = st.form_submit_button("Predict Wildfire Risk")
+    submitted = st.form_submit_button("Predict Wildfire Rsk")
 
 if submitted:
     input_data = {
