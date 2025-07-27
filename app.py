@@ -27,11 +27,10 @@ def load_encoder():
 
 @st.cache_data
 def load_features():
-    # Features aligned with model but without geospatial fields for simpler UI
     return [
-        "PRECIPITATION","MAX_TEMP","MIN_TEMP","AVG_WIND_SPEED",
-        "TEMP_RANGE","WIND_TEMP_RATIO","MONTH","SEASON",
-        "LAGGED_PRECIPITATION","LAGGED_AVG_WIND_SPEED","DAY_OF_YEAR","TEMP_DIFF"
+        "PRECIPITATION", "MAX_TEMP", "MIN_TEMP", "AVG_WIND_SPEED",
+        "TEMP_RANGE", "WIND_TEMP_RATIO", "MONTH", "SEASON",
+        "LAGGED_PRECIPITATION", "LAGGED_AVG_WIND_SPEED", "DAY_OF_YEAR", "TEMP_DIFF"
     ]
 
 # === Load resources ===
@@ -41,7 +40,7 @@ model = load_model()
 scaler = load_scaler()
 season_encoder = load_encoder()
 
-# Manually override season_encoder.classes_ to desired order
+# Override season_encoder.classes_ order if necessary
 season_encoder.classes_ = np.array(["Winter", "Spring", "Summer", "Fall"])
 
 features = load_features()
@@ -68,16 +67,38 @@ st.markdown(f"""
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown("""
+st.markdown(f"""
 <a href="https://github.com/calmscc/Wildfire">
-<div style="text-align: right;">
-<img src="data:image/jpg;base64,{}" width="25">
-</div>
+  <div style="text-align: right;">
+    <img src="data:image/jpg;base64,{github_data_url}" width="25">
+  </div>
 </a>
-""".format(github_data_url), unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 st.markdown("<h2 style='text-align: center; font-size: 35px;'>Wildfire Risk Prediction</h2>", unsafe_allow_html=True)
 st.markdown("<h2 style='text-align: center; font-size: 17.5px;'>Enter weather and environmental data to predict wildfire risk.</h2>", unsafe_allow_html=True)
+
+# Function to determine season from month
+def get_season(month):
+    if month in [12, 1, 2]:
+        return "Winter"
+    elif month in [3, 4, 5]:
+        return "Spring"
+    elif month in [6, 7, 8]:
+        return "Summer"
+    else:
+        return "Fall"
+
+# Callback to update season in session_state when date changes
+def update_season():
+    selected_month = st.session_state['selected_date'].month
+    st.session_state['season'] = get_season(selected_month)
+
+# Initialize session state defaults 
+if 'selected_date' not in st.session_state:
+    st.session_state['selected_date'] = datetime.today()
+if 'season' not in st.session_state:
+    st.session_state['season'] = get_season(st.session_state['selected_date'].month)
 
 with st.form(key="fire_form"):
     cols = st.columns(4)
@@ -91,32 +112,25 @@ with st.form(key="fire_form"):
     MIN_TEMP_F = cols2[1].number_input("Min Temperature (°F)", value=0.0)
     MAX_TEMP_F = cols2[2].number_input("Max Temperature (°F)", value=0.0)
 
-    # Date input replaces separate month and day of year with automatic extraction
-    selected_date = cols2[3].date_input("Select Date", value=datetime.today())
+    selected_date = cols2[3].date_input(
+        "Select Date",
+        value=st.session_state['selected_date'],
+        key='selected_date',
+        on_change=update_season
+    )
     MONTH = selected_date.month
     DAY_OF_YEAR = selected_date.timetuple().tm_yday
 
-    # Determine season from selected_date month
-    def get_season(month):
-        if month in [12, 1, 2]:
-            return "Winter"
-        elif month in [3, 4, 5]:
-            return "Spring"
-        elif month in [6, 7, 8]:
-            return "Summer"
-        else:
-            return "Fall"
-
     seasons = list(season_encoder.classes_)
-    detected_season = get_season(MONTH)
-
-    # Ensure the detected season index in seasons list
-    default_index = seasons.index(detected_season) if detected_season in seasons else 0
-
-    SEASON = st.selectbox("Season", seasons, index=default_index)
+    SEASON = st.selectbox(
+        "Season",
+        seasons,
+        index=seasons.index(st.session_state['season']),
+        key='season'  # ties this widget to session_state['season']
+    )
 
     TEMP_RANGE = MAX_TEMP_F - MIN_TEMP_F if MAX_TEMP_F >= MIN_TEMP_F else 0.0
-    TEMP_DIFF = TEMP_RANGE  # Keeping consistent with model input naming
+    TEMP_DIFF = TEMP_RANGE  # consistent with model input
 
     submitted = st.form_submit_button("Predict Wildfire Risk")
 
@@ -136,10 +150,8 @@ if submitted:
         "TEMP_DIFF": TEMP_DIFF
     }
 
-    # Build model input vector in correct feature order
     model_input = [input_data[feat] for feat in features]
 
-    # Check if all critical inputs are zero (basic validation)
     zero_fields = [
         PRECIPITATION, AVG_WIND_SPEED, WIND_TEMP_RATIO, LAGGED_PRECIPITATION,
         LAGGED_AVG_WIND_SPEED, MIN_TEMP_F, MAX_TEMP_F
@@ -156,7 +168,7 @@ if submitted:
     st.write(f"**Risk Level:** {risk_level}")
 
 if st.checkbox("Show correlation heatmap"):
-    df_for_heatmap = pd.read_csv('wildfire_updated.csv')  # Make sure this file matches your model inputs
+    df_for_heatmap = pd.read_csv('wildfire_updated.csv')
     df_for_heatmap = df_for_heatmap[features].copy()
     fig, ax = plt.subplots(figsize=(7, 5))
     corr = df_for_heatmap.corr()
