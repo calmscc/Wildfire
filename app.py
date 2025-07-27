@@ -40,7 +40,7 @@ model = load_model()
 scaler = load_scaler()
 season_encoder = load_encoder()
 
-# Override season_encoder.classes_ order if necessary
+# Override season_encoder.classes_ order if desired
 season_encoder.classes_ = np.array(["Winter", "Spring", "Summer", "Fall"])
 
 features = load_features()
@@ -78,7 +78,7 @@ st.markdown(f"""
 st.markdown("<h2 style='text-align: center; font-size: 35px;'>Wildfire Risk Prediction</h2>", unsafe_allow_html=True)
 st.markdown("<h2 style='text-align: center; font-size: 17.5px;'>Enter weather and environmental data to predict wildfire risk.</h2>", unsafe_allow_html=True)
 
-# Function to determine season from month
+# Function to get season from month
 def get_season(month):
     if month in [12, 1, 2]:
         return "Winter"
@@ -89,12 +89,12 @@ def get_season(month):
     else:
         return "Fall"
 
-# Callback to update season in session_state when date changes
+# Callback to update season when date changes
 def update_season():
     selected_month = st.session_state['selected_date'].month
     st.session_state['season'] = get_season(selected_month)
 
-# Initialize session state defaults 
+# Initialize session_state defaults if not already set
 if 'selected_date' not in st.session_state:
     st.session_state['selected_date'] = datetime.today()
 if 'season' not in st.session_state:
@@ -126,12 +126,13 @@ with st.form(key="fire_form"):
         "Season",
         seasons,
         index=seasons.index(st.session_state['season']),
-        key='season'  # ties this widget to session_state['season']
+        key='season'
     )
 
     TEMP_RANGE = MAX_TEMP_F - MIN_TEMP_F if MAX_TEMP_F >= MIN_TEMP_F else 0.0
-    TEMP_DIFF = TEMP_RANGE  # consistent with model input
+    TEMP_DIFF = TEMP_RANGE  # consistent with model input naming
 
+    # **MANDATORY submit button inside the form**
     submitted = st.form_submit_button("Predict Wildfire Risk")
 
 if submitted:
