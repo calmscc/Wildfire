@@ -15,15 +15,15 @@ def get_base64_image(img_path):
 
 @st.cache_resource
 def load_model():
-    return joblib.load('wildfire_model.joblib')
+    return joblib.load('Joblibs/wildfire_model.joblib')
 
 @st.cache_resource
 def load_scaler():
-    return joblib.load('scaler.joblib')
+    return joblib.load('Joblibs/scaler.joblib')
 
 @st.cache_resource
 def load_encoder():
-    return joblib.load('season_encoder.joblib')
+    return joblib.load('Joblibs/season_encoder.joblib')
 
 @st.cache_data
 def load_features():
