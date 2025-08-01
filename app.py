@@ -73,7 +73,7 @@ st.markdown("""
 </a>
 """.format(github_data_url), unsafe_allow_html=True)
 
-st.markdown("<h2 style='text-align: center; font-size: 35px;'>Wildfire Risk Prediction</h2>", unsafe_allow_html=True)
+st.markdown("<h2 style='text-align: center; font-size: 40px;'> California Wildfire Risk Prediction</h2>", unsafe_allow_html=True)
 st.markdown("<h2 style='text-align: center; font-size: 17.5px;'>Enter weather and environmental data to predict wildfire risk.</h2>", unsafe_allow_html=True)
 
 with st.form(key="fire_form"):
