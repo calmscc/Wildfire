@@ -145,9 +145,21 @@ if submitted:
     st.write(f"**Risk Level:** {risk_level}")
 
 if st.checkbox("Show correlation heatmap"):
-    df_for_heatmap = pd.read_csv('wildfire_updated.csv')  # Ensure this file exists
-    df_for_heatmap = df_for_heatmap[features].copy()
-    fig, ax = plt.subplots(figsize=(7, 5))
+    df_for_heatmap = pd.read_csv('wildfire_updated.csv')
+
+    if 'TEMP_DIFF' not in df_for_heatmap.columns:
+        df_for_heatmap['TEMP_DIFF'] = df_for_heatmap['MAX_TEMP'] - df_for_heatmap['MIN_TEMP']
+
+
+    missing_cols = [col for col in features if col not in df_for_heatmap.columns]
+    if missing_cols:
+        st.warning(f"The following expected features are missing from the heatmap data and will be excluded: {missing_cols}")
+
+
+    heatmap_features = [col for col in features if col in df_for_heatmap.columns]
+    df_for_heatmap = df_for_heatmap[heatmap_features].copy()
+
+    fig, ax = plt.subplots(figsize=(10, 7))
     corr = df_for_heatmap.corr()
     sns.heatmap(corr, ax=ax, cmap='coolwarm', annot=True, fmt=".2f")
     st.pyplot(fig)
