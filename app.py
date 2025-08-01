@@ -150,16 +150,18 @@ if st.checkbox("Show correlation heatmap"):
     if 'TEMP_DIFF' not in df_for_heatmap.columns:
         df_for_heatmap['TEMP_DIFF'] = df_for_heatmap['MAX_TEMP'] - df_for_heatmap['MIN_TEMP']
 
-
-    missing_cols = [col for col in features if col not in df_for_heatmap.columns]
-    if missing_cols:
-        st.warning(f"The following expected features are missing from the heatmap data and will be excluded: {missing_cols}")
-
-
+    # Select only features that exist
     heatmap_features = [col for col in features if col in df_for_heatmap.columns]
     df_for_heatmap = df_for_heatmap[heatmap_features].copy()
 
-    fig, ax = plt.subplots(figsize=(10, 7))
+    # Convert to numeric, coerce errors
+    df_for_heatmap = df_for_heatmap.apply(pd.to_numeric, errors='coerce')
+
+    # Optionally fill NaN to avoid errors
+    df_for_heatmap = df_for_heatmap.fillna(0)
+
     corr = df_for_heatmap.corr()
+    fig, ax = plt.subplots(figsize=(10, 7))
     sns.heatmap(corr, ax=ax, cmap='coolwarm', annot=True, fmt=".2f")
     st.pyplot(fig)
+
