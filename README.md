@@ -89,9 +89,7 @@ Predict wildfire risk in California using real environmental and weather data. T
 
 ---
 
-## License
 
-This project is licensed under the MIT License.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
